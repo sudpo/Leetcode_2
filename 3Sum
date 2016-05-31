@@ -1,0 +1,45 @@
+算法：先sort 然后two pointer 前后夹，注意如何去重复 (O(n^2)) 
+
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+       
+        vector<vector<int> > result;
+        if(nums.size() < 3) {
+            return result;
+        }
+        sort(nums.begin(), nums.end());
+        for(int i = 0; i < nums.size() - 2; ++i){
+            int start = i + 1;
+            int end = nums.size() - 1;
+            int target = -nums[i];
+            while(start < end){
+                int sum = nums[start] + nums[end];
+                if(sum < target){
+                    start++;
+                }else if(sum > target){
+                    end--;
+                }else{
+                    vector<int> solution(3,0);
+                    solution[0] = nums[i];
+                    solution[1] = nums[start];
+                    solution[2] = nums[end];
+                    // 去掉第二个元素重复的情况
+                    while(start < end && nums[start] == solution[1]){
+                        start++;
+                    }
+                    // 去掉第三个元素重复的情况
+                    while(start < end && nums[end] == solution[2]){
+                        end--;
+                    }
+                    result.push_back(solution);
+                }
+            }
+            // 去掉第一个元素重复的情况
+            while(i + 1 < nums.size() && nums[i] == nums[i+1]){
+                i++;
+            }
+        }
+        return result;
+    }
+};
