@@ -1,0 +1,38 @@
+双指针方法，类似于3SUM, 因为最后要求输入的是最接近的数字，所以可以先SORT 然后一前一后双指针夹击
+
+
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        int n = nums.size();
+        if(n < 3) {
+            return 0;
+        }
+        sort(nums.begin(), nums.end());
+        int minDiff = INT_MAX;
+        int closestSum = 0;
+        for(int i = 0; i < n - 2; ++i){
+            int newTarget = target - nums[i];
+            int start = i + 1;
+            int end = n - 1;
+            while(start < end){
+                int diff = newTarget - nums[start]-nums[end];
+                int sum = nums[i] + nums[start] + nums[end];
+                if(diff == 0){
+                    cout<<sum<<endl;
+                    return target;
+                }
+                if(sum < target){
+                    start++;
+                }else{
+                    end--;
+                }
+                if(abs(diff) < abs(minDiff)){
+                    minDiff = diff;
+                    closestSum = sum;
+                }
+            }
+        }
+        return closestSum;
+    }
+};
