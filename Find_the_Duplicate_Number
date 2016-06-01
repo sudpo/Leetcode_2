@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 0) {
+            return -1;
+        }
+        int step = 0;
+        int curr = nums[0];
+        while(step < n){
+            step++;
+            if(nums[curr] == 0){
+                return curr;
+            }
+            else{
+                int tmp = nums[curr];
+                nums[curr] = 0;
+                curr = tmp;
+            }
+        }
+        return -1;
+        
+    }
+};
