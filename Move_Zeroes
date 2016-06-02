@@ -1,0 +1,51 @@
+算法1, 双指针 ＋ 纪录一共有多少个0
+
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 0) {
+            return;
+        }
+        int numZero = 0;
+        int start = 0;
+        int i = 0;
+        while(i < n){
+            if(nums[i] != 0) {
+                nums[start] = nums[i];
+                i++;
+                start++;
+            }
+            else{
+                numZero++;
+                i++;
+            }
+        }
+        for(int i = 1; i <= numZero; ++i){
+            nums[n-i] = 0;
+        }
+        return;
+    }
+};
+
+算法2， 双指针不用纪录0的个数， 通过不停的交换把0移到最后
+
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 0) {
+            return;
+        }
+        int start = 0;
+        int i = 0;
+        while(i < n){
+            if(nums[i] != 0) {
+                swap(nums[start], nums[i]);
+                start++;
+            }
+            i++;
+        }
+        return;
+    }
+};
