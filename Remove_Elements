@@ -1,0 +1,25 @@
+算法1: 利用two pointer 参照move zeros 算法二 但是没有利用到hint 3
+
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        int n = nums.size();
+        if(n == 0) {
+            return 0;
+        }
+        int last = 0;
+        int curr = 0;
+        int numVal = 0;
+        while(curr < n) {
+            if(nums[curr] != val) {
+                swap(nums[curr], nums[last]);
+                last++;
+            }
+            else{
+                numVal++;
+            }
+            curr++;
+        }
+        return (n-numVal);
+    }
+};
