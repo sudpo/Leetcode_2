@@ -1,0 +1,36 @@
+算法： 利用楼上奇妙算法， 注意k==0 和k比数组长度一半都还大的情况
+
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+        if(k == 0) {
+            return 0;
+        }
+        int n = prices.size();
+        if(n < 2 ){
+            return 0;
+        }
+        if(k > n/2) {
+            int result = 0;
+            for(int i = 1; i < n; ++i) {
+                if(prices[i] > prices[i-1]){
+                    result += prices[i] - prices[i-1];
+                }
+            }
+            return result;
+        }
+        vector<int> hold(k, INT_MIN);
+        vector<int> release(k, 0);
+        for(int i = 0; i < n; ++i) {
+            for(int j = k-1; j >= 0; --j) {
+                release[j]  = max(release[j], hold[j] + prices[i]);
+                if(j > 0){
+                    hold[j] = max(hold[j], release[j-1] - prices[i]);
+                }else{
+                    hold[j] = max(hold[j], - prices[i]);
+                }
+             }
+        }
+        return release[k-1];
+    }
+};
