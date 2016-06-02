@@ -1,0 +1,38 @@
+算法1: dp 同上用localMax 表示在第i 天卖出的最大利润
+状态转移方程： localMax = max(0, prices[i] - prices[i-1] + localMax);
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        if(n < 2){
+            return 0;
+        }
+        int localMax = 0;
+        int res= 0;
+        for(int i = 1; i < n; ++i) {
+            localMax = max(0, prices[i] - prices[i-1] + localMax);
+            res = max(res, localMax);
+        }
+        return res;
+    }
+};
+
+算法2: 更为直观， 用minPrice 记录目前为止出现过的最低价格，用当前价格减去minPrice 现在出手的最大利润。
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        if(n < 2){
+            return 0;
+        }
+        int minPrice = prices[0];
+        int res = 0;
+        for(int i = 1; i < n; ++i) {
+            minPrice = min (prices[i], minPrice);
+            res= max(prices[i] - minPrice, res);
+        }
+        return res;
+    }
+};
