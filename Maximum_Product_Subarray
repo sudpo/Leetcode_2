@@ -1,0 +1,37 @@
+算法， dp 用localMax 和localMin 记录以当前元素结尾的最大，最小值
+当当前元素
+状态转移方程为：
+
+            localMax = max( nums[i], localMax * nums[i]);
+            localMin = min( nums[i], localMin * nums[i]);
+
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 0) {
+            return 0;
+        }
+
+     // localMax/localMin stores the max/min product of // subarray that ends with the current number nums[i]
+
+        int localMax = nums[0];
+        int localMin = nums[0]；
+        int result = nums[0];
+
+        for(int i = 1; i < n; ++i) {
+            // multiplied by a negative makes big number smaller, small number bigger
+
+      // so we redefine the extremums by swapping them
+            if(nums[i] < 0) {
+                swap(localMin, localMax);
+            }
+            // max/min product for the current number is either the current number itself
+      // or the max/min by the previous number times the current one
+            localMax = max( nums[i], localMax * nums[i]);
+            localMin = min( nums[i], localMin * nums[i]);
+            result = max(result, localMax);
+        }
+        return result;
+    }
+};
