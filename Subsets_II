@@ -1,0 +1,60 @@
+算法1 和SUBSETS 算法1类似， 对于重复元素 （重复次数为count)，对于每个existed subset, 重复元素可以加入1-count 次
+
+class Solution {
+public:
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int> > res(1, vector<int>());
+        if(n == 0) {
+            return res;
+        }
+        sort(nums.begin(), nums.end());
+        for(int i = 0; i < n; ) {
+            int count = 0;
+            while(count + i < nums.size() && nums[count+i] == nums[i] ){
+                count++;
+            }
+            int size = res.size();
+            for(int j = 0; j < size; ++j) {
+                vector<int> tmp = res[j];
+                for(int k = 0; k < count; ++k){
+                    tmp.push_back(nums[i]);
+                    res.push_back(tmp);
+                }
+            }
+            i += count;
+        }
+
+        return res;
+    }
+};
+
+算法2和subsets 算法2一样但是注意去重复元素， 对于重复元素只取第一个 后面的都不在取
+
+class Solution {
+    void subsetsWithDup(vector<int>& nums, vector<vector<int> > &res, vector<int>& solution, int start){
+        res.push_back(solution);
+        if(start == nums.size()) {
+            return;
+        }
+        for(int i = start; i < nums.size(); ++i) {
+            if(i == start || nums[i] != nums[i-1]){
+                solution.push_back(nums[i]);
+                subsetsWithDup(nums,res,solution, i+1);
+                solution.pop_back();
+            }
+        }
+    }
+
+public:
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        vector<vector<int> > res;
+        if(nums.size() == 0){
+            return res;
+        }
+        vector<int> solution;
+        sort(nums.begin(), nums.end());
+        subsetsWithDup(nums, res, solution, 0);
+        return res;
+    }
+};
