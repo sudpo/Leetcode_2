@@ -1,0 +1,27 @@
+算法，用一个set来保持最多t个元素的window
+
+class Solution {
+public:
+    bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
+        int n = nums.size();
+        if(n < 2){
+            return false;
+        }
+
+        set<long> window;
+        int l = 0;
+        for(int i = 0; i < n; ++i){
+            if(i -l > k) {
+                window.erase(nums[l++]);
+            }
+            auto it = window.lower_bound(long(nums[i]) - long(t));
+            //here we get *it - nums[i] >= -t
+            //so we need *it - nums[i] <= t to make sure that |*it - nums[i]| <= t
+            if(it != window.end() && *it <= long(nums[i]) + long(t)){
+                return true;
+            }
+            window.insert(nums[i]);
+        }
+        return false;
+    }
+};
