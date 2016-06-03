@@ -1,0 +1,101 @@
+算法1：
+
+buy[i] means before day i what is the maxProfit for any sequence end with buy.
+
+sell[i] means before day i what is the maxProfit for any sequence end with sell.
+
+rest[i] means before day i what is the maxProfit for any sequence end with rest.
+            rest[i] = max(rest[i-1], sell[i-1]); (本来 rest[i] = max(rest[i-1], sell[i-1], buy[i-1]) 由于 rest[i-1] > buy[i-1])
+            buy[i] = max(rest[i-1] - prices[i], buy[i-1]);
+            sell[i] = max(buy[i-1] + prices[i], sell[i-1]);
+最后的结果是 max(rest[n-1], sell[n-1])
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        if(n < 2){
+            return 0;
+        }
+
+        vector<int> rest(n, 0);
+        vector<int> buy(n, 0);
+        vector<int> sell(n, 0);
+
+        buy[0] = -prices[0];
+        sell[0] = INT_MIN;
+
+        for(int i = 1; i < n; ++i){
+            rest[i] = max(rest[i-1], sell[i-1]);
+            buy[i] = max(rest[i-1] - prices[i], buy[i-1]);
+            sell[i] = max(buy[i-1] + prices[i], sell[i-1]);
+        }
+        return max(rest[n-1], sell[n-1]);
+    }
+};
+
+算法2： 根据算法1的转移方程可以看出当前状态只与前一天状态有关， 所以可以只用三个变量记录前一天状态而不需要用数组
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        if(n < 2){
+            return 0;
+        }
+
+        int localBuy = -prices[0];
+        int localSell = INT_MIN;
+        int localRest = 0;
+
+        int tmpBuy = localBuy;
+        int tmpSell = localSell;
+        int tmpRest = localRest;
+
+        for(int i = 1; i < n; ++i){
+            localRest = max(tmpRest, tmpSell);
+            localBuy = max(tmpRest - prices[i], tmpBuy);
+            localSell = max(tmpBuy + prices[i], tmpSell);
+            tmpBuy = localBuy;
+            tmpSell = localSell;
+            tmpRest = localRest;
+        }
+        return max(localRest, localSell);
+    }
+};
+
+算法3，还是从最开始的状态转移方程开始分析
+     rest[i] = max(rest[i-1], sell[i-1]);
+     buy[i] = max(rest[i-1] - prices[i], buy[i-1]);
+     sell[i] = max(buy[i-1] + prices[i], sell[i-1]);
+
+     rest[i-1] <= sell[i-1] so rest[i]  = sell[i-1]
+     则状态转移方程变为
+
+     buy[i] = max(sell[i-2] - prices[i], buy[i-1]);
+     sell[i] = max(buy[i-1] + prices[i], sell[i-1]);
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        if(n < 2){
+            return 0;
+        }
+
+        int localBuy = INT_MIN;
+        int localSell = 0;
+
+        int tmpBuy = INT_MIN;
+        int tmpSell =0;
+
+        for(int i = 0; i < n; ++i){
+            tmpBuy = localBuy;
+            localBuy = max(tmpSell - prices[i], tmpBuy);
+            tmpSell = localSell;
+            localSell =max(tmpBuy + prices[i], tmpSell);
+
+        }
+        return localSell;
+    }
+};
