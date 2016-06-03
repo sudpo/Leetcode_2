@@ -1,0 +1,26 @@
+Moore Voting Algorithm
+The essential concepts is you keep a counter for the majority number X. If you find a number Ythat is not X, the current counter should deduce 1. The reason is that if there is 5 X and 4 Y, there would be one (5-4) more X than Y. This could be explained as "4 X being paired out by 4Y".
+
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        int n = nums.size();
+        if( n == 0){
+            return 0;
+        }
+        int majority = nums[0];
+        int count = 1;
+        for(int i = 1; i < n; ++i){
+            if(count == 0){
+                majority = nums[i];
+            }
+            if(nums[i] == majority){
+                count++;
+            }
+            else{
+                count--;
+            }
+        }
+        return majority;
+    }
+};
