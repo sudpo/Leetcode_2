@@ -1,0 +1,58 @@
+算法1： down-up dp, 不用额外空间， 但是改变了原矩阵值
+
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int n = triangle.size();
+        if(n == 0){
+            return 0;
+        }
+        int m = triangle[0].size();
+        if(m == 0){
+            return 0;
+        }
+
+        for(int i = n-2; i >=0; --i){
+            for(int j = i; j >=0; --j){
+                triangle[i][j] = min(triangle[i+1][j], triangle[i+1][j+1]) + triangle[i][j];
+            }
+        }
+        return triangle[0][0];
+    }
+};
+
+算法2: top-down dp, 用一个一维数组记录状态转移 注意每一行要从后往前算
+
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int n = triangle.size();
+        if(n == 0){
+            return 0;
+        }
+        int m = triangle[0].size();
+        if(m == 0){
+            return 0;
+        }
+
+        vector<int> dp(n, 0);
+        dp[0] = triangle[0][0];
+        int res = INT_MAX;
+        for(int level = 1; level < n; ++level){
+            for(int j = level; j >= 0; --j){
+                if(j == 0){
+                    dp[j] = dp[j] + triangle[level][j];
+                }else if(j == level){
+                    dp[j] = dp[j-1] + triangle[level][j];
+                }
+                else{
+                    dp[j] = min(dp[j], dp[j-1]) + triangle[level][j];
+                }
+            }
+        }
+        for(int j = 0; j < n; ++j){
+            res = min(res, dp[j]);
+        }
+        return res;
+    }
+};
