@@ -1,0 +1,33 @@
+反证法： 假如我们得到的结果不是最优的，那必定有一个比我们更好的结果
+他的左右横坐标分别为aol和aor。因为我们的循环直到两根指针相遇才结束，
+也就是说我们必定在某个时刻有一个指针指向了aol或者aor但是没有同时指向他们。
+不失一般性的，假设在这个时刻，我们指向了aol，但没指向aor，此时aol有以下两种情况会发生变化。
+1.aol在循环退出前没移动过。high指针一直向aol靠拢，直到他们相遇。这个时候循环退出，
+但是high指针在向aol靠拢时必定指向过aor，这与前提矛盾。（只要high指针经历过aor那么便会记录并得到这个假设的最优解）。 
+2.aol指针移动了。此时high指针在指向aor之前一定得到过比aol指的值更大的值，这个时候aol就会向右移动了。可是我们要知道，
+当前的aol和high指针组成的容器要比所谓的最优解（aol和aor组成的容器）更高更宽，这与aol和aor是最优解矛盾。 所有情况都矛盾，得证。
+
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int n = height.size();
+        if(n == 0){
+            return 0;
+        }
+        
+        int left = 0;
+        int right = n -1;
+        int result = 0;
+        
+        while(left < right){
+            result = max(result, min(height[left], height[right]) * (right-left));
+            if(height[left] < height[right]){
+                left++;
+            }
+            else{
+                right--;
+            }
+        }
+        return result;
+    }
+};
