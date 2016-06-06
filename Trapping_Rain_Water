@@ -41,3 +41,63 @@ public:
         
     }
 };
+
+算法2： dp, ltr[i] 表示到i位置i时从左边出现过的最大高度，rtl[i] 表示到位置i从右边开始出现过的最大高度， 则位置i的地方能存放的水量则为 min(rtl[i], ltr[i]) - height[i]
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size();
+        if( n < 3) {
+            return 0;
+        }
+        vector<int> ltr(n,0);
+        vector<int> rtl(n,0);
+        ltr[0] = height[0];
+        rtl[n-1] = height[n-1];
+        for(int i = 1; i < n; ++i){
+            ltr[i] = max(ltr[i-1], height[i]);
+        }
+        for(int i = n -2; i >= 0; --i){
+            rtl[i] = max(rtl[i+1], height[i]);
+        }
+        int res = 0;
+        for(int i = 0; i < n; ++i){
+            res += min(ltr[i], rtl[i]) - height[i];
+        }
+        return res;
+    }
+};
+
+
+算法3： 利用stack 
+if we want to find out how much water on a bar(bot), we need to find out the left larger bar's index (il), and right larger bar's index(ir),
+so that the water is ( min(A[il],A[ir]) - A[bot] ) * ( ir-il-1), use min since only the lower boundary can hold water, and we also need to handle the edge case that there is no il.
+To implement this we use a stack that store the indices with decreasing bar height, once we find a bar who's height is larger, then let the top of the stack be bot, the cur bar is ir, and the previous bar is il.
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size();
+        if( n < 3) {
+            return 0;
+        }
+        stack<int> st;
+        int maxWater;
+        int i = 0;
+        while(i < n)
+        {
+            if(st.empty() || height[i] < height[st.top()]){
+                st.push(i);
+                i++;
+            }else{
+                int tmp = height[st.top()];
+                st.pop();
+                maxWater += st.empty() ? 0 : (min(height[i], height[st.top()]) - tmp) *(i-st.top()-1);
+
+            }
+        }
+        return maxWater;
+    }
+};
+
+
