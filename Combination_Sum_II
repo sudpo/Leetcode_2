@@ -1,0 +1,34 @@
+注意去掉重复结果的方法， 当a[i] ==a[i-1] 的时候如果a[i-1]已经取了 则不再取
+class Solution {
+    void combinationSum2(vector<int>& candidates,vector<vector<int> > &res, vector<int> &solution, int start, int target){
+        if(target == 0){
+            res.push_back(solution);
+            return;
+        }
+        else{
+            for(int i = start; i < candidates.size(); ++i){
+                if(candidates[i] > target){
+                    return;
+                }
+                if(i == start || candidates[i] != candidates[i-1]){
+                solution.push_back(candidates[i]);
+                combinationSum2(candidates, res, solution, i+1, target - candidates[i]);
+                solution.pop_back();
+                }
+            }
+        }
+    }
+public:
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        vector<vector<int> > res;
+        int n = candidates.size();
+        if( n == 0) {
+            return res;
+        }
+        sort(candidates.begin(), candidates.end());
+        vector<int> solution;
+        combinationSum2(candidates, res, solution, 0, target);
+        return res;
+
+    }
+};
