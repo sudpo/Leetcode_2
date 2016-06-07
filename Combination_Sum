@@ -1,0 +1,31 @@
+class Solution {
+    void combinationSum(vector<int>& candidates,vector<vector<int> > &res, vector<int> &solution, int start, int target){
+        if(target == 0){
+            res.push_back(solution);
+            return;
+        }
+        if(candidates[start] > target){
+            return;
+        }
+        else{
+            for(int i = start; i < candidates.size(); ++i){
+                solution.push_back(candidates[i]);
+                combinationSum(candidates, res, solution, i, target - candidates[i]);
+                solution.pop_back();
+            }
+        }
+    }
+public:
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int> > res;
+        int n = candidates.size();
+        if( n == 0) {
+            return res;
+        }
+        sort(candidates.begin(), candidates.end());
+        vector<int> solution;
+        combinationSum(candidates, res, solution, 0, target);
+        return res;
+
+    }
+};
