@@ -1,0 +1,42 @@
+算法1
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int n = nums.size();
+        if(n < 3) {
+            return n;
+        }
+        bool isSecond = false;
+        int start = 0;
+        for(int i = 1; i < n; ++i){
+            if(nums[i] != nums[start]){
+                isSecond = false;
+                nums[++start] = nums[i];
+            }else{
+                if(!isSecond){
+                    isSecond = true;
+                    nums[++start] = nums[i];
+                }
+            }
+        }
+        return start + 1;
+    }
+};
+
+算法2 ：
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int n = nums.size();
+        if(n < 3) {
+            return n;
+        }
+        int start = 0;
+        for(int i = 0; i < n; ++i) {
+            if(start < 2 || nums[i] > nums[start - 2]){
+                nums[start++] = nums[i];
+            }
+        }
+        return start;
+    }
+};
