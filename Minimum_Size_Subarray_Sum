@@ -1,0 +1,70 @@
+算法1（O(n) )
+class Solution {
+public:
+    int minSubArrayLen(int s, vector<int>& nums) {
+        int n = nums.size();
+        if(n == 0){
+            return 0;
+        }
+
+        int start = 0;
+        int end = 0;
+        int sum = nums[0];
+        int minLen = INT_MAX;
+        while(end < n){
+            while(sum >= s && start <= end){
+                minLen = min(minLen, end - start + 1);
+                sum -= nums[start];
+                start++;
+            }
+            sum += nums[++end];
+        }
+        return minLen == INT_MAX ? 0 : minLen;
+    }
+};
+
+算法2 （O(nlogn) ) binary search
+
+第一步，nums[i] 存放sum of [0-i]  increasing array (like sorted, so we can use binary search in the second step)
+第二步  if(nums[i] >= target) then we need find the largest j that nums[i] -nums[j] >= target (upper bound) then minLen = min(minLen, i - j);
+
+class Solution {
+    int upperBound(vector<int> &nums, int start, int end, int target){
+        while(start + 1 < end){
+            int mid = start + (end - start) /2;
+            if(nums[mid] <= target){
+                start = mid;
+            }else{
+                end = mid;
+            }
+        }
+        if(nums[end] <= target){
+            return end;
+        }else if(nums[start] <= target){
+            return start;
+        }
+        return -1;
+    }
+public:
+    int minSubArrayLen(int s, vector<int>& nums) {
+        int n = nums.size();
+        if(n == 0){
+            return 0;
+        }
+        for(int i = 1; i < n; ++i){
+            nums[i] += nums[i-1];
+        }
+        int minLen = INT_MAX;
+
+        for(int i = 0; i < n; ++i){
+            if(nums[i] >= s){
+                minLen = min(minLen, i+1);
+                int p = upperBound(nums, 0, i, nums[i] - s);
+                if(p != -1){
+                    minLen = min(minLen, i - p);
+                }
+            }
+        }
+        return minLen == INT_MAX ? 0 : minLen;
+    }
+};
