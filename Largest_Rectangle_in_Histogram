@@ -1,0 +1,45 @@
+for every bar (i, x) (i is from 0 to n-1 and x is the heights[i]), we calculate the area with 'x' as the smallest bar in the rectangle
+Once we get the area for every bar(i,x), then the max among them is the thing we are looking for. 
+
+So the question is down to how to find the area with 'x' as the smaller bar ? 
+
+In order to do the calculation, we need to know
+1: left-index : first smaller (smaller than 'x') bar on the left of (i, x)
+2: right-index: first smaller(smaller than 'x') bar on the right of (i,x)
+
+then area = x * (right-index - left-index - 1)
+
+Then the question is how to find the right and left index ?
+
+We traverse all bars form left to right, maintain a stack of bars' positions, Every bar position is pushed to stack once if the bar is higher than the last bar in the stack or the stack is empty 
+
+Every time we encounter a bar(i, heights[i])  which is lower than the current top of the stack, then it is time to calculate the area for the current top bar.
+So first we pop the stack and then the left-index will be the current top of the stack 
+index i will be the right-index (first smaller)  
+
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        heights.push_back(0);
+        int n = heights.size();
+        stack<int> increaseHeight;
+        int i = 0;
+        int max_area = 0;
+        while(i < n){
+            if(increaseHeight.empty() || heights[i] > heights[increaseHeight.top()]){
+                increaseHeight.push(i);
+                ++i;
+            }
+            else{
+                int tmp = increaseHeight.top();
+                increaseHeight.pop();
+                if(increaseHeight.empty()){
+                    max_area = max(max_area, heights[tmp] * (i - (-1) - 1));
+                }else{
+                    max_area = max(max_area, heights[tmp] * ( i - increaseHeight.top() - 1));
+                }
+            }
+        }
+        return max_area;
+    }
+};
