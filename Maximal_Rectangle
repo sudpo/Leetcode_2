@@ -1,0 +1,109 @@
+算法 利用算柱状图中最大长方形的方法 一层一层的算
+
+class Solution {
+    int maximalRectangleHis(vector<int> &his){
+        int i = 0;
+        stack<int> increaseHeight;
+        int maxArea = 0;
+        while(i < his.size()){
+            if(increaseHeight.empty() || his[i] > his[increaseHeight.top()]){
+                increaseHeight.push(i);
+                i++;
+            }else{
+                int curr = increaseHeight.top();
+                increaseHeight.pop();
+                int leftIndex;
+                if(increaseHeight.empty()){
+                    leftIndex = -1;
+                }else{
+                    leftIndex = increaseHeight.top();
+                }
+                maxArea = max(maxArea, his[curr] * ( i - leftIndex - 1));
+
+            }
+        }
+        return maxArea;
+    }
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        int n = matrix.size();
+        if(n == 0){
+            return 0;
+        }
+        int m = matrix[0].size();
+        if(m == 0){
+            return 0;
+        }
+        int res = 0;
+
+        vector<int> his(m+1, 0);
+        for(int i = 0; i < n; ++i){
+            for(int j = 0; j < m; ++j){
+                if(matrix[i][j] == '0'){
+                    his[j] = 0;
+                }else{
+                    his[j]++;
+                }
+            }
+            res = max(res, maximalRectangleHis(his));
+        }
+        return res;
+    }
+};
+
+
+算法2： dp 一层一层的算，当前层的结果只与前一层有关，所以一维数组就可以了 
+
+height counts the number of successive '1's above (plus the current one). The value of left & right means the boundaries of the rectangle which contains the current point with a height of value height
+
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        int n = matrix.size();
+        if(n == 0) {
+            return 0;
+        }
+        int m = matrix[0].size();
+        if(m == 0) {
+            return 0;
+        }
+
+        vector<int> left(m, 0);
+        vector<int> right(m, m-1);
+        vector<int> height(m, 0);
+        int maxArea = 0;
+
+        for(int i = 0; i < n; ++i){
+            for(int j = 0; j < m; ++j) {
+                if(matrix[i][j] == '0'){
+                    height[j] = 0;
+                }else{
+                    height[j]++;
+                }
+            }
+
+            int curLeft = 0;
+            int curRight = m;
+            for(int j = 0; j < m; ++j) {
+                if(matrix[i][j] == '0'){
+                    left[j] = 0;
+                    curLeft = j + 1;
+                }else{
+                    left[j] = max(curLeft, left[j]);
+                }
+            }
+            for(int j = m -1; j >= 0; --j){
+                if(matrix[i][j] == '0'){
+                    right[j] = m-1;
+                    curRight = j-1;
+                }else{
+                    right[j] = min(right[j], curRight);
+                }
+            }
+            for(int j = 0; j < m; ++j){
+                maxArea = max(maxArea, (right[j] -left[j] + 1) * height[j]);
+            }
+        }
+        return maxArea;
+    }
+};
