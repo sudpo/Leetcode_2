@@ -1,0 +1,53 @@
+算法1: 从后往前填
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int end = m+n-1;
+        while(m > 0 && n > 0){
+            if(nums1[m-1] >= nums2[n-1]){
+                nums1[end] = nums1[m-1];
+                end--;
+                m--;
+            }else{
+                nums1[end] = nums2[n-1];
+                end--;
+                n--;
+            }
+        }
+        while(m > 0){
+            nums1[end] = nums1[m-1];
+            end--;
+            m--;
+        }
+        while(n > 0){
+            nums1[end] = nums2[n-1];
+            end--;
+            n--;
+        }
+        return;
+    }
+};
+
+改进算法1:
+不需要考虑1中有剩下元素的情况
+He didn't assume n is bigger than m. Either m or nj could have a chance to drop below zero first. But if it's m, noting needed to be done, cause it's already in array nums1.
+
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int end = m+n-1;
+        m--;
+        n--;
+        while(m >= 0 && n >= 0){
+            if(nums1[m] >= nums2[n]){
+                nums1[end--] = nums1[m--];
+            }else{
+                nums1[end--] = nums2[n--];
+            }
+        }
+        while(n >= 0){
+            nums1[end--] = nums2[n--];
+        }
+        return;
+    }
+};
