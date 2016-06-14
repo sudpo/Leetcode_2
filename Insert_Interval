@@ -1,0 +1,82 @@
+算法1， 暴力解 插入后重新排序后用MERGE INTERVAL的方法解
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class Solution {
+    bool isMerge(const Interval a, const Interval b){
+        if(a.end >= b.start){
+            return true;
+        }
+        return false;
+    }
+
+    Interval merge(Interval a, Interval b){
+        Interval res = Interval(a.start, max(a.end, b.end));
+        return res;
+    }
+public:
+    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
+        vector<Interval> res;
+        intervals.push_back(newInterval);
+        int n = intervals.size();
+        if(n == 1){
+            return intervals;
+        }
+
+        sort(intervals.begin(), intervals.end(), [](Interval a, Interval b){return a.start < b.start;});
+        while(intervals.size() > 1){
+            if(isMerge(intervals[0], intervals[1])){
+                intervals[1] = merge(intervals[0], intervals[1]);
+                intervals.erase(intervals.begin());
+            }
+            else{
+                res.push_back(intervals[0]);
+                intervals.erase(intervals.begin());
+            }
+        }
+        res.push_back(intervals[0]);
+        return res;
+
+    }
+};
+
+算法二 O(n) 不断更新newInterval 
+
+class Solution {
+public:
+    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
+        int n = intervals.size();
+        if(n == 0){
+            intervals.push_back(newInterval);
+            return intervals;
+        }
+        vector<Interval> res;
+        vector<Interval>::iterator itrStart = intervals.begin();
+        for(; itrStart != intervals.end(); ++itrStart){
+            if(itrStart->start > newInterval.end){
+               // all intervals after will not overlap with the newInterval
+                break;
+            }
+            else if(itrStart->end < newInterval.start){
+               //*itrStart will not overlap with the newInterval
+                res.push_back(*itrStart);
+            }else{
+               //update the newInterval because we have overlap
+                newInterval.start = min(newInterval.start, itrStart->start);
+                newInterval.end = max(newInterval.end, itrStart->end);
+            }
+        }
+        res.push_back(newInterval);
+        while(itrStart != intervals.end()){
+            res.push_back(*itrStart);
+            itrStart++;
+        }
+        return res;
+    }
+};
