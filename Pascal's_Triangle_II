@@ -1,0 +1,32 @@
+class Solution {
+public:
+    vector<int> getRow(int rowIndex) {
+        vector<int> solution;
+        if(rowIndex < 0) {
+            return solution;
+        }
+        for(int i = 0; i < rowIndex+1; ++i){
+            vector<int> oldSolution = solution;
+            for(int j = 1; j < solution.size(); ++j){
+                solution[j] = oldSolution[j] + oldSolution[j-1];
+            }
+            solution.push_back(1);
+        }
+        return solution;
+    }
+};
+
+改进算法，每行从后往前算 减少空间复杂度
+class Solution {
+public:
+    vector<int> getRow(int rowIndex) {
+        vector<int> solution(rowIndex+1, 0);
+        solution[0] = 1;
+        for(int i = 1; i < rowIndex+1; ++i){
+            for(int j = i; j >= 1; --j){
+                solution[j] += solution[j-1];
+            }
+        }
+        return solution;
+    }
+};
