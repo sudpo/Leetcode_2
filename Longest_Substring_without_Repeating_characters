@@ -1,0 +1,52 @@
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int n = s.size();
+        if(n < 2){
+            return n;
+        }
+        int start = 0;
+        int end = 1;
+        int maxLen = 1;
+        unordered_set<char> test;
+        test.insert(s[0]);
+        while(end < s.size()){
+            if(test.find(s[end]) == test.end()){
+                test.insert(s[end]);
+                maxLen = max(maxLen, end-start+1);
+                end++;
+            }
+            else{
+                while(s[start] != s[end]){
+                    test.erase(s[start]);
+                    start++;
+                }
+                start++;
+                end++;
+            }
+        }
+        return maxLen;
+    }
+};
+
+改进算法 用map代替set, 可以存储每个元素上次出现的位置
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int n = s.size();
+        if(n < 2){
+            return n;
+        }
+        int start = -1;
+        int maxLen = 0;
+        map<char, int> charMap;
+        for(int i = 0; i < s.size(); ++i){
+            if(charMap.find(s[i]) != charMap.end()){
+                start = max(start, charMap[s[i]]);
+            }
+            charMap[s[i]] = i;
+            maxLen = max(maxLen, i - start);
+        }
+        return maxLen;
+    }
+};
