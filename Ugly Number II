@@ -1,0 +1,26 @@
+算法： 用一个数组来表示已经产生的ugly number 然后用i2, i3, i5 来代表L1,L2,L3的位置
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        if(n == 1){
+            return 1;
+        }
+
+        vector<int> uglys(n, 0);
+        uglys[0] = 1;
+        int i2 = 0, i3 = 0, i5 = 0;
+        for(int i = 1; i < n; ++i){
+            uglys[i] = min(min(uglys[i2] * 2, uglys[i3] * 3), uglys[i5] * 5);
+            if(uglys[i] == uglys[i2] * 2) {
+                i2++;
+            }
+            if(uglys[i] == uglys[i3] * 3){
+                i3++;
+            }
+            if(uglys[i] == uglys[i5] * 5){
+                i5++;
+            }
+        }
+        return uglys[n-1];
+    }
+};
