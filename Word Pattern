@@ -1,0 +1,32 @@
+算法同上， 注意双向对比问题
+class Solution {
+public:
+    bool wordPattern(string pattern, string str) {
+        vector<string> pat;
+        stringstream ss(str);
+        string tmp;
+        while(getline(ss, tmp, ' ')){
+            pat.push_back(tmp);
+        }
+
+        if(pat.size() != pattern.size()){
+            return false;
+        }
+        vector<string> map(26);
+        unordered_map<string, char> map2;
+        for(int i = 0; i < pattern.size(); ++i){
+            if(map[pattern[i] - 'a'] == ""){
+                map[pattern[i] - 'a'] = pat[i];
+            }else if (map[pattern[i] - 'a'] != pat[i]){
+                return false;
+            }
+
+            if(map2.find(pat[i]) == map2.end()){
+                map2[pat[i]] = pattern[i];
+            }else if(map2[pat[i]] != pattern[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+};
