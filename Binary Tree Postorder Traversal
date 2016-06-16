@@ -1,0 +1,70 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if(root == NULL) {
+            return res;
+        }
+        stack<TreeNode*> stack;
+        TreeNode *last_pop = root;
+        stack.push(last_pop);
+        while(!stack.empty()){
+            TreeNode *top = stack.top();
+            if(top->left != NULL && top->left != last_pop && top->right != last_pop){
+                stack.push(top->left);
+            }
+            else if(top->right != NULL && top->right != last_pop && (top->left == NULL || top->left == last_pop)){
+                stack.push(top->right);
+            }
+            else{
+                stack.pop();
+                last_pop = top;
+                res.push_back(top->val);
+            }
+        }
+        return res;
+    }
+};
+
+方法2： postorder 左右中， 可以利用preorder 中左右 改成中右左 然后最后在REVERSE 
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> res;
+        stack<TreeNode*> stack;
+        TreeNode *pCurrent = root;
+        while(!stack.empty() || pCurrent != NULL){
+            if(pCurrent != NULL){
+                res.push_back(pCurrent->val);
+                stack.push(pCurrent);
+                pCurrent = pCurrent->right;
+            }else{
+                TreeNode *pNode = stack.top();
+                stack.pop();
+                pCurrent = pNode->left;
+            }
+        }
+        reverse(res.begin(), res.end());
+        return res;
+
+    }
+};
