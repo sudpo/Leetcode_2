@@ -1,0 +1,33 @@
+算法1： 用MAP, 注意要双向map
+
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        int n = s.size();
+        int m = t.size();
+        if(m != n) {
+            return false;
+        }
+        unordered_map<char, char> sTot;
+        unordered_map<char, char> tTos;
+        for(int i = 0; i < n; ++i){
+            if(sTot.find(s[i]) == sTot.end()){
+                sTot[s[i]] = t[i];
+            }else{
+                if(sTot[s[i]] != t[i]){
+                    return false;
+                }
+            }
+
+            if(tTos.find(t[i]) == tTos.end()){
+                tTos[t[i]] = s[i];
+            }else{
+                if(tTos[t[i]] != s[i]){
+                    return false;
+                }
+            }
+
+        }
+        return true;
+    }
+};
