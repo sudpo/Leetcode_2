@@ -1,0 +1,24 @@
+算法1：用两个set分别记录出现过的和存贮过的序列
+class Solution {
+public:
+    vector<string> findRepeatedDnaSequences(string s) {
+        int n = s.size();
+        vector<string> res;
+        if(n <= 10){
+            return res;
+        }
+
+        unordered_set<string> test;
+        unordered_set<string> stored;
+        for(int i = 0; i <= n - 10; ++i){
+            string tmp = s.substr(i, 10);
+            if(test.find(tmp) != test.end() && stored.find(tmp) == stored.end()){
+                res.push_back(tmp);
+                stored.insert(tmp);
+            }else{
+                test.insert(tmp);
+            }
+        }
+        return res;
+    }
+};
