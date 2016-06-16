@@ -1,0 +1,19 @@
+算法同ugly number 2
+class Solution {
+public:
+    int nthSuperUglyNumber(int n, vector<int>& primes) {
+        vector<int> index(primes.size(), 0);
+        vector<int> uglys(n, INT_MAX);
+
+        uglys[0] = 1;
+        for(int i = 1; i < n; ++i){
+            for(int j = 0; j < primes.size(); ++j){
+                uglys[i] = min(uglys[i], uglys[index[j]] * primes[j]);
+            }
+            for(int j = 0; j < primes.size(); ++j){
+                index[j] += (uglys[i] == uglys[index[j]] * primes[j]);
+            }
+        }
+        return uglys[n-1];
+    }
+};
