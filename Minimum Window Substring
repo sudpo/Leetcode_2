@@ -1,0 +1,99 @@
+算法1： 暴力解法，超时
+
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        int sn = s.size();
+        int tn = t.size();
+        if(tn > sn) {
+            return "";
+        }
+
+        unordered_map<char, int> count;
+        for(int i = 0; i < tn; ++i){
+            count[t[i]]++;
+        }
+
+        int start = 0;
+        string minString ="";
+        int minLen = INT_MAX;
+        while(start < sn - tn + 1){
+            unordered_map<char, int> test = count;
+            while(test.find(s[start]) == test.end() && start < sn -tn + 1){
+                start++;
+            }
+            int end = start;
+            while(end < sn && !test.empty()){
+                if(test.find(s[end]) != test.end()){
+                    test[s[end]]--;
+                    if(test[s[end]] == 0) {
+                        test.erase(s[end]);
+                    }
+                }
+                end++;
+            }
+            if(test.empty()){
+                if(end - start < minLen){
+                    minLen = end - start;
+                    minString = s.substr(start, end - start);
+                }
+            }
+            start++;
+        }
+        return minString;
+    }
+};
+
+算法2， 
+
+1. Use two pointers: start and end to represent a window.
+2. Move end to find a valid window. (用一个counter 和一个 map 来确定找到VALID 的window) 
+3. When a valid window is found, move start to find a smaller window.
+
+
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        int sn = s.size();
+        int tn = t.size();
+        if(tn > sn) {
+            return "";
+        }
+
+        unordered_map<char, int> count;
+        for(int i = 0; i < tn; ++i){
+            count[t[i]]++;
+        }
+
+        int minLen = INT_MAX;
+        int start = 0;
+        int end = 0;
+        int minStart = 0;
+        int counter=t.size();
+
+        while(end < sn){
+            if(count[s[end]] > 0){
+                counter--;
+            }
+            count[s[end]]--;
+            end++;
+           // find a valid window, then begin to move the start pointer 
+            while(counter == 0){
+                if(end - start < minLen){
+                    minStart = start;
+                    minLen = end - start;
+                }
+                count[s[start]]++;
+                if(count[s[start]] > 0){
+                    counter++;
+                }
+                start++;
+            }
+        }
+
+        if(minLen != INT_MAX){
+            return s.substr(minStart, minLen);
+        }
+        return "";
+    }
+};
