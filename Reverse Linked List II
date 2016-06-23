@@ -1,0 +1,72 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseBetween(ListNode* head, int m, int n) {
+        if(head == NULL) {
+            return head;
+        }
+        ListNode *dummy = new ListNode(0);
+        dummy->next = head;
+        ListNode *pre = dummy;
+        ListNode *start = head;
+        ListNode *end = head;
+        while(m > 1){
+            start = start->next;
+            pre = pre->next;
+            m--;
+        }
+
+        while(n > 1){
+            end = end->next;
+            n--;
+        }
+
+        ListNode *next = end->next;
+        pre->next = end;
+
+        pre = next;
+        while(start != next){
+            ListNode *tmp = start->next;
+            start->next = pre;
+            pre = start;
+            start = tmp;
+        }
+        return dummy->next;
+    }
+};
+
+算法2
+class Solution {
+public:
+    ListNode* reverseBetween(ListNode* head, int m, int n) {
+        if(head == NULL || n == m) {
+            return head;
+        }
+        n -= m;
+        ListNode *dummy = new ListNode(0);
+        dummy->next = head;
+        ListNode *pre = dummy;
+        while(m > 1){
+            pre = pre->next;
+            m--;
+        }
+        ListNode *pstart = pre->next;
+        while(n > 0) {
+            ListNode *tmp = pstart->next;
+            pstart->next = tmp->next;
+            tmp->next = pre->next;
+            pre->next = tmp;
+            n--;
+        }
+
+        return dummy->next;
+    }
+};
+
