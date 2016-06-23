@@ -1,0 +1,67 @@
+算法 1：
+ 
+step 1: 用动态规划建立isbreakable, isbreakable[i] 表示s [i, n-i] 是否可以拆分成字典中的词
+isbreakable[i] = true if s.substr(i, j) 在字典里面 而且isbreakable[i+j] == true; 这里可以使用剪枝，用字典里的最长字符串来限制循环
+
+step 2: 标准 backtracking 
+
+class Solution {
+public:
+
+    vector<string> wordBreak(string s, unordered_set<string>& wordDict) {
+        vector<string> res;
+        int n = s.size();
+        if(n == 0) {
+            return res;
+        }
+        vector<bool> isBreakable(n+1, false);
+        isBreakable[n] = true;
+
+        int maxLen = 0;
+        for(auto it = wordDict.begin(); it != wordDict.end(); ++it){
+            maxLen = max(maxLen, int ((*it).size()));
+        }
+
+        for(int i = n-1; i >= 0; --i){
+            for(int j = 1; j <= min(maxLen, n-i); ++j){
+                if(isBreakable[i+j] && wordDict.find(s.substr(i,j)) != wordDict.end()) {
+                    isBreakable[i] = true;
+                    break;
+                }
+            }
+        }
+        vector<string> solution;
+
+        wordBreakHelper(res, solution, wordDict, isBreakable, s, 0);
+        return res;
+    }
+
+    string vtos(vector<string> &solution){
+        string res;
+        for(int i = 0; i < solution.size(); ++i) {
+            res += solution[i];
+            res += " ";
+        }
+        if(res.size() != 0) {
+            res.pop_back();
+        }
+        return res;
+    }
+
+    void wordBreakHelper(vector<string> &res, vector<string> &solution, unordered_set<string>& wordDict, vector<bool> &isBreakable, string s, int start){
+        int n = s.size();
+        if(start == n) {
+            string temp = vtos( solution);
+            res.push_back(temp);
+            return;
+        }
+
+        for(int i = start+1; i <= n; ++i){
+            if(wordDict.find(s.substr(start, i-start)) != wordDict.end()  && isBreakable[i]){
+                solution.push_back(s.substr(start, i-start));
+                wordBreakHelper(res, solution, wordDict, isBreakable, s, i);
+                solution.pop_back();
+            }
+        }
+    }
+};
