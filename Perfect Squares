@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int numSquares(int n) {
+        if(n == 0) {
+            return 0;
+        }
+
+        vector<int> dp(n+1, 0);
+
+        for(int i = 0; i <= n; ++i){
+            //For each i , the max # of perfect square is always i (when square = 1*1). So the boundary of each dp[i] = i.
+            dp[i] = i;
+            for(int k = 1; k * k <= i; ++k){
+                dp[i] = min(dp[i], dp[i-k*k] + 1);
+            }
+        }
+        return dp[n];
+    }
+};
