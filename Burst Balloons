@@ -1,0 +1,52 @@
+算法：dp[i][j] 表示戳爆[i,j]内所有气球能得到的最大钱数
+对于dp[i][i] 的值是确定的 dp[i][i] = nums[i-1]*nums[i]*nums[i+1] 
+然后对于dp[i][i+1] 则有两种情况 先戳i 还是先戳i+1, 此时唯一能确定的是不管先戳i 还是i+1 最后一个戳破的时候 两边的为nums[i-1] 和 nums[i+1+1] 
+递推到dp[i][j] 则无论最后一个戳破的气球 i<=k<=j, k 的边界气球都是i-1, j+1
+这里得到递推公式
+dp[i][j] = max(dp[i][j], nums[i-1]*nums[k]*nums[j+1] + dp[i][k-1] + dp[k+1][j])  i<=k<=j
+
+所以递推得从小的长度推广到大的长度， 只有知道长度为1的解的时候才能推出长度为2的解
+ 
+Be Naive First
+When I first get this problem, it is far from dynamic programming to me. I started with the most naive idea the backtracking.
+We have n balloons to burst, which mean we have n steps in the game. In the i th step we have n-i balloons to burst, i = 0~n-1. Therefore we are looking at an algorithm of O(n!). Well, it is slow, probably works for n < 12 only.
+Of course this is not the point to implement it. We need to identify the redundant works we did in it and try to optimize.
+Well, we can find that for any balloons left the maxCoins does not depends on the balloons already bursted. This indicate that we can use memorization (top down) or dynamic programming (bottom up) for all the cases from small numbers of balloon until n balloons. How many cases are there? For k balloons there are C(n, k) cases and for each case it need to scan the k balloons to compare. The sum is quite big still. It is better than O(n!) but worse than O(2^n).
+Better idea
+We then think can we apply the divide and conquer technique? After all there seems to be many self similar sub problems from the previous analysis.
+Well, the nature way to divide the problem is burst one balloon and separate the balloons into 2 sub sections one on the left and one one the right. However, in this problem the left and right become adjacent and have effects on the maxCoins in the future.
+Then another interesting idea come up. Which is quite often seen in dp problem analysis. That is reverse thinking. Like I said the coins you get for a balloon does not depend on the balloons already burst. Therefore instead of divide the problem by the first balloon to burst, we divide the problem by the last balloon to burst.
+Why is that? Because only the first and last balloons we are sure of their adjacent balloons before hand!
+For the first we have nums[i-1]*nums[i]*nums[i+1] for the last we havenums[-1]*nums[i]*nums[n].
+OK. Think about n balloons if i is the last one to burst, what now?
+We can see that the balloons is again separated into 2 sections. But this time since the balloon i is the last balloon of all to burst, the left and right section now has well defined boundary and do not affect each other! Therefore we can do either recursive method with memoization or dp.
+Final
+Here comes the final solutions. Note that we put 2 balloons with 1 as boundaries and also burst all the zero balloons in the first round since they won't give any coins. The algorithm runs in O(n^3) which can be easily seen from the 3 loops in dp solution.
+
+class Solution {
+public:
+    int maxCoins(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 0){
+            return 0;
+        }
+
+        nums.insert(nums.begin(), 1);
+        nums.insert(nums.end(), 1);
+
+        // dp[i][j] means the max coins we can get if we burst ballons within nums[i][j];
+        vector<vector<int> > dp(nums.size(), vector<int>(nums.size(), 0 ));
+
+        // 从小长度求大长度
+        for(int len = 1; len <= n; ++len){
+            for(int left = 1; left <= n - len + 1; ++left){
+                int right = left + len -1;
+                for(int k = left; k <= right; ++k){
+         //转移方程理解： 当第K个气球是最后一个爆的时候 他的左右边界是确定的 LEFT-1, RIGHT+1, 然后在分别加上左边和右边的最大值
+                    dp[left][right] = max(dp[left][right], nums[left-1]*nums[k]*nums[right+1] + dp[left][k-1] + dp[k+1][right]);
+                }
+            }
+        }
+        return dp[1][n];
+    }
+};
