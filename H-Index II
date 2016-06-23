@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int n = citations.size();
+        if(n == 0){
+            return n;
+        }
+
+        int start = 0;
+        int end = n - 1;
+        while(start + 1 < end){
+            int mid = start + (end - start) / 2;
+            if(citations[mid] >= n - mid){
+                end = mid;
+            }else {
+                start = mid;
+            }
+        }
+
+        if(citations[start] >= n - start){
+            return n - start;
+        }else if(citations[end] >= n - end){
+            return n - end;
+        }else {
+            return 0;
+        }
+    }
+};
+
