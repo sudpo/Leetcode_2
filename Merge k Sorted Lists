@@ -1,0 +1,97 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+
+
+算法1: 暴力解 两两merge 
+class Solution {
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        ListNode *dummy = new ListNode(0);
+        ListNode *curr = dummy;
+        while(l1 != NULL && l2 != NULL){
+            if(l1->val < l2->val){
+                curr->next = l1;
+                l1 = l1->next;
+                curr = curr->next;
+            }
+            else{
+                curr->next = l2;
+                l2 = l2->next;
+                curr = curr->next;
+            }
+        }
+        if(l1 != NULL){
+            curr->next = l1;
+        }
+        if(l2 != NULL){
+            curr->next = l2;
+        }
+        return dummy->next;
+    }
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        if(lists.size() == 0) {
+            return NULL;
+        }
+        while(lists.size() > 1) {
+            int n = lists.size();
+            ListNode *tmp = mergeTwoLists(lists[n-1], lists[n-2]);
+            lists.pop_back();
+            lists.pop_back();
+            lists.push_back(tmp);
+        }
+        return lists[0];
+    }
+};
+
+算法2: priority - queue 
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+    struct compare{
+        bool operator() (const ListNode *l, const ListNode *r){
+            return (l->val > r->val);
+        }
+    };
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        priority_queue<ListNode *, vector<ListNode*>, compare> q;
+        for(int i = 0; i < lists.size(); ++i){
+            ListNode* tmp = lists[i];
+            if(tmp != NULL) {
+                q.push(tmp);
+            }
+        }
+        if(q.size() == 0) {
+            return NULL;
+        }
+
+        ListNode *result = q.top();
+        q.pop();
+        if(result->next){
+            q.push(result->next);
+        }
+        ListNode *tail = result;
+        while(!q.empty()){
+            tail->next = q.top();
+            q.pop();
+            tail = tail->next;
+            if(tail->next) {
+                q.push(tail->next);
+            }
+        }
+        return result;
+    }
+};
