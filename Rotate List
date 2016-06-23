@@ -1,0 +1,99 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        if(head == NULL) {
+            return head;
+        }
+
+        int length = 0;
+        ListNode *curr = head;
+        while(curr != NULL){
+            length++;
+            curr = curr->next;
+        }
+
+        k = k % length;
+        if(k == 0){
+            return head;
+        }
+        ListNode *dummy = new ListNode(0);
+        dummy->next = head;
+        ListNode *pre = dummy;
+        curr = head;
+        while(k > 0){
+            curr = curr->next;
+            k--;
+        }
+        while(curr != NULL){
+            curr = curr->next;
+            pre = pre->next;
+        }
+
+        dummy->next = pre->next;
+        curr= dummy->next;
+        pre->next = NULL;
+        while(curr->next != NULL){
+            curr = curr->next;
+        }
+        curr->next = head;
+        return dummy->next;
+    }
+};
+
+稍微改进一下 用一个tail 指针
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        if(head == NULL) {
+            return head;
+        }
+
+        int length = 0;
+        ListNode *curr = head;
+        ListNode *dummy = new ListNode(0);
+        dummy->next = head;
+        ListNode *tail = dummy;
+        while(curr != NULL){
+            length++;
+            curr = curr->next;
+            tail = tail->next;
+        }
+
+        k = k % length;
+        if(k == 0){
+            return head;
+        }
+        ListNode *pre = dummy;
+        curr = head;
+        while(k > 0){
+            curr = curr->next;
+            k--;
+        }
+        while(curr != NULL){
+            curr = curr->next;
+            pre = pre->next;
+        }
+
+        dummy->next = pre->next;
+        pre->next = NULL;
+        tail->next = head;
+        return dummy->next;
+    }
+};
