@@ -1,0 +1,20 @@
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        vector<int> res;
+        unordered_map<int , int > count;
+        multimap<int, int> solution;
+        for(int i = 0; i < nums.size(); ++i){
+            count[nums[i]]++;
+        }
+        for(auto it = count.begin(); it != count.end(); ++it){
+            solution.insert(pair<int,int> (it->second, it->first));
+        }
+
+        for(auto it = solution.rbegin(); it != solution.rend() && k > 0; ++it){
+            res.push_back(it->second);
+            k--;
+        }
+        return res;
+    }
+};
