@@ -1,0 +1,67 @@
+算法1：暴力解　O(n^2)
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        if(n <= 1){
+            return n;
+        }
+
+        vector<int> dp(n, 1);
+        int res = 0;
+        for(int i = 1; i < n; ++i){
+            for(int k = 0; k < i; ++k){
+                if(nums[i] > nums[k]){
+                    dp[i] = max(dp[i], 1 + dp[k]);
+                }
+            }
+            res = max(res, dp[i]);
+        }
+        return res;
+
+    }
+};
+
+算法2 ： NlogN 
+
+这里要注意 res 里面存放的并不是LIS 结果， 只是长度和LIS 一样而已
+注意数组的lower_bound function;
+
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        vector<int> res;
+        for(int i = 0; i < nums.size(); ++i){
+            auto it = lower_bound(res.begin(), res.end(), nums[i]);
+            //it 将指向第一个比nums[i] 大的数
+            if(it == res.end()){
+                //找不到比nums[i] 更大的数了
+                res.push_back(nums[i]);
+            }
+            else{
+                //找到比nums[i] 更大的数，用nums[i] 替换掉
+                *it = nums[i];
+            }
+        }
+
+        return res.size();
+    }
+};
+
+如果写自己的TEST CASE 
+int main(void) {
+    Solution s;
+    vector<int> v;
+    //[10,9,2,5,3,7,101,18]
+    v.push_back(10);
+    v.push_back(9);
+    v.push_back(2);
+    v.push_back(55);
+    v.push_back(333);
+    v.push_back(777);
+    v.push_back(101);
+    v.push_back(28);
+
+    cout<<s.lengthOfLIS(v)<<endl;
+    return 0;
+}
