@@ -1,0 +1,45 @@
+class Solution {
+    bool isPalindrome(string &s){
+        int start  = 0;
+        int end = s.size() - 1;
+        while(start <= end){
+            if(s[start++] != s[end--]){
+                return false;
+            }
+        }
+        return true;
+    }
+public:
+    vector<vector<int>> palindromePairs(vector<string>& words) {
+        unordered_map<string, int> dict;
+        vector<vector<int> > res;
+        for(int i = 0; i < words.size(); ++i){
+            string tmp = words[i];
+            reverse(tmp.begin(), tmp.end());
+            dict[tmp] = i;
+        }
+
+        if(dict.find("") != dict.end()){
+            for(int i = 0; i < words.size(); ++i){
+                if(isPalindrome(words[i])){
+                    if(i == dict[""]) continue;
+                    res.push_back({dict[""], i});
+                }
+            }
+        }
+
+        for(int i = 0; i < words.size(); ++i){
+            for(int j = 0; j < words[i].size(); ++j){
+                string left = words[i].substr(0, j);
+                string right = words[i].substr(j);
+                if(dict.find(left) != dict.end() && isPalindrome(right) && dict[left] != i){
+                    res.push_back({i, dict[left]});
+                }
+                if(dict.find(right) != dict.end() && isPalindrome(left) && dict[right] != i){
+                    res.push_back({dict[right], i});
+                }
+            }
+        }
+        return res;
+    }
+};
