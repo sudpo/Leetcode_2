@@ -1,0 +1,52 @@
+算法1：先sort 然后遇到citations[i] >= n-i 这h-index = n - i, H-index ii 用binary search 更好
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int n = citations.size();
+        if(n == 0){
+            return n;
+        }
+
+        sort(citations.begin(), citations.end());
+        int h_index = 0;
+        for(int i = 0; i < n; ++i){
+            if(citations[i] >= n - i){
+                return n-i;
+            }
+        }
+        return 0;
+    }
+};
+
+
+
+算法2： 用map 
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int n = citations.size();
+        if(n == 0){
+            return n;
+        }
+
+        map<int, int> citationMap;
+        for(int i = 0; i < n; ++i){
+            if(citations[i] > n){
+                citationMap[n]++;
+            }else{
+                citationMap[citations[i]]++;
+            }
+        }
+
+        int paper = 0;
+        for(int i = n; i >= 0; --i){
+            paper += citationMap[i];
+            if(paper >= i){
+                return i;
+            }
+        }
+        return 0;
+
+
+    }
+};
