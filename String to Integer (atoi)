@@ -1,0 +1,43 @@
+class Solution {
+public:
+    int myAtoi(string str) {
+        int n = str.size();
+        if(n == 0){
+            return 0;
+        }
+
+        long long res = 0;
+        int start = 0;
+        while(start < n && str[start] == ' '){
+            start++;
+        }
+        if(start == n) {
+            return 0;
+        }
+        bool sign = true;
+
+        if(str[start] == '-'){
+            sign = false;
+            start++;
+        }
+        else if(str[start] == '+'){
+            start++;
+        }
+        while(start < n && isdigit(str[start])){
+            res = res * 10 + (str[start] - '0');
+            if(sign && res >= INT_MAX){
+                return INT_MAX;
+            }
+            if(!sign && -res <= INT_MIN){
+                return INT_MIN;
+            }
+            start++;
+        }
+
+        if(sign ){
+            return res;
+        }else{
+            return -res;
+        }
+    }
+};
