@@ -1,0 +1,83 @@
+老土算法
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        int lengthA = 0;
+        ListNode *tmp = headA;
+        while(tmp != NULL) {
+            lengthA++;
+            tmp = tmp -> next;
+        }
+        int lengthB = 0;
+        tmp = headB;
+        while(tmp != NULL){
+            lengthB++;
+            tmp = tmp -> next;
+        }
+        if(lengthB < lengthA){
+            tmp = headA;
+            headA = headB;
+            headB = tmp;
+            swap(lengthA, lengthB);
+        }
+
+        int diff = lengthB - lengthA;
+        while(diff > 0){
+            headB = headB->next;
+            diff--;
+        }
+        while(headB != NULL && headA != NULL){
+            if(headB == headA){
+                return headB;
+            }
+            headB = headB->next;
+            headA = headA->next;
+        }
+        return NULL;
+    }
+};
+一个聪明的算法
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        ListNode *p1 = headA;
+        ListNode *p2 = headB;
+        if(p1 == NULL || p2 == NULL){
+            return NULL;
+        }
+        while(p1 != p2 && p1 != NULL && p2 != NULL) {
+            p1 = p1->next;
+            p2 = p2->next;
+
+        //
+        // Any time they collide or reach end together without colliding
+        // then return any one of the pointers.
+        //
+            if(p1 == p2) {
+                return p1;
+            }
+        //
+        // If one of them reaches the end earlier then reuse it
+        // by moving it to the beginning of other list.
+        // Once both of them go through reassigning,
+        // they will be equidistant from the collision point.
+        //
+            if(p1 == NULL) {
+                p1 = headB;
+            }
+            if(p2 == NULL) {
+                p2 = headA;
+            }
+        }
+        return p1;
+    }
+};
