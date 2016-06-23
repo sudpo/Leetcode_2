@@ -1,0 +1,108 @@
+算法1关键　1: 用dp建立一个isPal的数组 isPal[i][j] 表示是s[i,j]是否为palindrome 
+                  2: cut[i] 表示到s[i]为止需要的最少CUT数
+                 3：注意cut[i]的归零情况
+                 4：两个dp可以同时构造 节省时间 
+class Solution {
+public:
+    int minCut(string s) {
+        int n = s.size();
+        if( n < 2){
+            return 0;
+        }
+
+        vector<vector<bool> > isPal(n, vector<bool> (n, false));
+        vector<int> cut(n, 0);
+        for(int i = 0; i < n; ++i){
+            isPal[i][i] = true;
+            cut[i] = i;
+        }
+
+        for(int i = 1; i < n; ++i){
+            for(int j = 0; j <= i; ++j){
+                if(s[i] == s[j]) {
+                    if(i-j >= 2){
+                        isPal[j][i] = isPal[j+1][i-1];
+                    }else{
+                        isPal[j][i] = true;
+                    }
+                }
+                if(isPal[j][i]){
+                    if(j == 0){
+                        cut[i] = 0;
+                    }else{
+                        cut[i] = min(cut[i], cut[j-1] + 1);
+                    }
+                }
+            }
+        }
+        return cut[n-1];
+
+    }
+};
+
+稍微改进一下 如果cut[i] 表示前i个字符，cut[0] = -1， 就可以不用考虑cut[i] 归零的问题
+class Solution {
+public:
+    int minCut(string s) {
+        int n = s.size();
+        if( n < 2){
+            return 0;
+        }
+
+        vector<vector<bool> > isPal(n, vector<bool> (n, false));
+        vector<int> cut(n+1, 0);
+        for(int i = 0; i < n; ++i){
+            isPal[i][i] = true;
+            cut[i] = i-1;
+        }
+        cut[n] = n-1;
+
+        for(int i = 1; i < n; ++i){
+            for(int j = 0; j <= i; ++j){
+                if(s[i] == s[j]) {
+                    if(i-j >= 2){
+                        isPal[j][i] = isPal[j+1][i-1];
+                    }else{
+                        isPal[j][i] = true;
+                    }
+                }
+                if(isPal[j][i]){
+                    cut[i+1] = min(cut[i+1], cut[j] + 1);
+                }
+            }
+        }
+        return cut[n];
+
+    }
+};
+
+算法2， 不需要二维数组记录是否是pali
+cut[i] 表示前i个元素需要的最少切割次数， cut[0] = -1
+
+The Manancher-like solution scan the array from left to right (for i loop) and only check those sub-strings centered at s[i]; once a non-palindrome string is found, it will stop and move to i+1. Same as the DP solution, cut[i] is used to save the minimum cuts for s[0:i-1]. For each i, we do two for loops (for j loop) to check if the substrings s[i-j .. i+j] (odd-length substring) and s[i-j-1.. i+j] (even-length substring) are palindrome. By increasing j from 0, we can find all the palindrome sub-strings centered at i and update cut accordingly. Once we meet one non-palindrome sub-string, we stop for-j loop since we know there no further palindrome substring centered at i. This helps us avoid unnecessary palindrome substring checks, as we did in the DP algorithm. Therefore, this version is faster.
+
+class Solution {
+public:
+    int minCut(string s) {
+        int n = s.size();
+        if( n < 2){
+            return 0;
+        }
+
+        vector<int> cut(n+1, 0);
+        for(int i = 0; i <= n; ++i){
+            cut[i] = i-1;
+        }
+
+        for(int i = 1; i <n; ++i){
+            for(int j = 0 ; i-j >=0 && i+j <n && s[i-j] == s[i+j]; j++){
+                cut[i+j+1] = min(cut[i+j+1], cut[i-j] + 1);
+            }
+            for(int j = 0; i-j-1 >=0 && i+j <n && s[i-j-1] == s[i+j]; j++){
+                cut[i+j+1] = min(cut[i+j+1], 1 + cut[i-j-1]);
+            }
+        }
+        return cut[n];
+
+    }
+};
