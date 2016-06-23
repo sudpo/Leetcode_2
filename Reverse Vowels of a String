@@ -1,0 +1,27 @@
+class Solution {
+public:
+    string reverseVowels(string s) {
+        int n = s.size();
+        if(n == 0) {
+            return s;
+        }
+
+        unordered_set<char> vowels{'a', 'e', 'i', 'o', 'u', 'A', 'E','I','O','U'};
+        int start = 0;
+        int end = n -1;
+        while(start < end){
+            while(vowels.find(s[start]) == vowels.end()){
+                start++;
+            }
+            while(vowels.find(s[end]) == vowels.end()){
+                end--;
+            }
+            if(start < end){
+                swap(s[start], s[end]);
+                start++;
+                end--;
+            }
+        }
+        return s;
+    }
+};
