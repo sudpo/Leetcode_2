@@ -1,0 +1,70 @@
+bool compare(pair<int, int> a, pair<int,int> b){
+        if(a.first == b.first){
+            return a.second < b.second;
+        }
+        return a.first < b.first;
+    }
+
+class Solution {
+    public:
+
+    int maxEnvelopes(vector<pair<int, int>>& envelopes) {
+        int n = envelopes.size();
+        if(n < 2){
+            return n;
+        }
+        sort(envelopes.begin(), envelopes.end(), compare);
+
+        int res = 1;
+        vector<int> dp(n, 1);
+        for(int i = 1; i < n; ++i){
+            for(int j = 0; j < i; ++j){
+                if(envelopes[i].first > envelopes[j].first && envelopes[i].second > envelopes[j].second){
+                    dp[i] = max(dp[i], dp[j] + 1);
+                }
+            }
+            res = max(res, dp[i]);
+        }
+        return res;
+
+    }
+};
+
+
+这个地方SORT 也可以用lambda function 来写
+sort(envelopes.begin(), envelopes.end(), [](pair<int,int> a, pair<int,int> b){ return a.first < b.first || (a.first == b.first && a.second < b.second);});
+
+算法2：和300. Longest Increasing Subsequence 同样的算法
+注意此处，是按照SECOND的逆序排列
+比如序列 【1，1】【2，3】【4，6】【4，5】【6，7】 
+
+bool compare(pair<int, int> a, pair<int,int> b){
+        if(a.first == b.first){
+            return a.second > b.second;
+        }
+        return a.first < b.first;
+    }
+
+class Solution {
+    public:
+
+    int maxEnvelopes(vector<pair<int, int>>& envelopes) {
+        int n = envelopes.size();
+        if(n < 2){
+            return n;
+        }
+        sort(envelopes.begin(), envelopes.end(), compare);
+
+        vector<int> dp;
+        for(int i = 0; i < n; ++i){
+            auto iter = lower_bound(dp.begin(), dp.end(), envelopes[i].second);
+            if(iter == dp.end()){
+                dp.push_back(envelopes[i].second);
+            }else if(envelopes[i].second < *iter){
+                *iter = envelopes[i].second;
+            }
+        }
+        return dp.size();;
+
+    }
+};
