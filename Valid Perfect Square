@@ -1,0 +1,23 @@
+算法 Binary Search, 注意判断条件用除法， 用乘法的时候会OVERFLOW
+class Solution {
+public:
+    bool isPerfectSquare(int num) {
+        if(num == 1){
+            return true;
+        }
+        int start = 1;
+        int end = num / 2;
+        while(start + 1 < end){
+            int mid = start + (end - start) / 2;
+            if(mid <= num / mid){
+                start = mid;
+            }else{
+                end = mid;
+            }
+        }
+        if(start * start == num || end * end == num){
+            return true;
+        }
+        return false;
+    }
+};
