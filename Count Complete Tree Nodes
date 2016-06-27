@@ -1,0 +1,37 @@
+最暴力的解法：超时
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        if(root == NULL){
+            return 0;
+        }
+        return 1 + countNodes(root->left) + countNodes(root->right);
+    }
+};
+
+当某个子树是complete tree的时候 其节点数就是2^h - 1 所以可以直接返回不用在往下递归
+
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        if(root == NULL){
+            return 0;
+        }
+        int hl =0,  hr = 0;
+        TreeNode *l = root;
+        TreeNode *r = root;
+        while(l){
+            hl++;
+            l=l->left;
+        }while(r){
+            hr++;
+            r=r->right;
+        }
+        if(hl == hr) {
+            return pow(2,hl) - 1;
+        }
+
+
+        return 1 + countNodes(root->left) + countNodes(root->right);
+    }
+};
