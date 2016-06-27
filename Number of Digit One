@@ -1,0 +1,40 @@
+我的解法的基本思想就是考虑把某一个位数上的数字设成1后，看其他位置有多少种选择。
+ 然后把每个数字位取1而有的选择都加起来就可以了。
+ 比如，假设输入为392， 那么把个位设置成1之后，十位和百位的选择就有00~39共40种，所以个位上可以有40个1。
+ 然后把十位设置成1之后，百位和个位有 00 ~39共40中选择，注意这儿并不是32或者33种，
+ 因为当10位上的数设成1之后，319也是小于392的，所以个位可以取所有的0~9。
+ 然后百位设成1后，十位和个位有00~99，共100种选择。
+
+所以加起来就是： 40 + 40 + 100 = 180 种可能性，也就是180 个 1。
+
+// A number is divided into three parts, front, curDigit and rear. For example, 
+if input is 123456789, when we are considering the situation if we set the digit 5 to 1, 
+then:
+front = 1234, curDigit = 5, rear = 6789, rearSize = 10000
+class Solution {
+public:
+    int countDigitOne(int n) {
+        if(n <= 0){
+            return 0;
+        }
+
+        int ones = 0;
+        int rearSize = 1;
+        long mod = 1;
+        while(mod <= n){
+            long front = n / (mod * 10);
+            long rear = n % mod;
+            int currentDigit = int( n % (mod * 10))/ mod;
+            if(currentDigit > 1){
+                ones += (front+1) * rearSize;
+            }else if (currentDigit == 1){
+                ones += (front * rearSize + rear + 1);
+            }else if (currentDigit == 0){
+                ones += front * rearSize;
+            }
+            mod *= 10;
+            rearSize *= 10;
+        }
+        return ones;
+    }
+};
