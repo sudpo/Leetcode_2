@@ -1,0 +1,64 @@
+算法1：利用BST的inorder traversal 是有序数列的特性（利用了HINT 1) 
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        stack<TreeNode *> stack;
+        TreeNode *pCurr = root;
+        while(!stack.empty() || pCurr != NULL){
+            if(pCurr != NULL){
+                stack.push(pCurr);
+                pCurr = pCurr->left;
+            }else{
+                TreeNode *pNode = stack.top();
+                stack.pop();
+                k--;
+                if(k == 0){
+                    return pNode->val;
+                }
+                pCurr = pNode->right;
+            }
+        }
+        return 0;
+    }
+};
+
+算法2: 利用Binary Search 的思想，对于给定的一个root, 统计这个root下面左边子数的节点个数， 如果节点个数恰好为k-1则根节点就为所找节点，如果大于k-1 则说明第k大在左子树，反之则在右子树
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+    int countNodes(TreeNode *root){
+        if(root == NULL){
+            return 0;
+        }
+        return 1 + countNodes(root->left) + countNodes(root->right);
+    }
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        int pos = countNodes(root->left);
+        if(pos == k -1){
+            return root->val;
+        }else if(pos < k-1) {
+            return kthSmallest(root->right, k - 1 - pos);
+        }else{
+            return kthSmallest(root->left, k);
+        }
+    }
+};
