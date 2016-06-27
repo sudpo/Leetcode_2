@@ -1,0 +1,7 @@
+此算法可以推广到所有的PRIME number 算出INT_MAX 中最大的Power of this prime number 然后n必须能整除这个最大的数
+class Solution {
+public:
+    bool isPowerOfThree(int n) {
+        return n > 0 && (1162261467 % n == 0);
+    }
+};
