@@ -1,0 +1,27 @@
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        if( n <= 0){
+            return false;
+        }
+        while(n > 1){
+            if(n & 1){
+                return false;
+            }
+            n >>= 1;
+        }
+        return true;
+    }
+};
+
+利用 当n是二的倍数的时候二进制表示为100000....而n-1则为0111111...所以 n & (n-1)  == 0 如果是二的倍数
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        if( n <= 0){
+            return false;
+        }
+
+        return !(n&(n-1));
+    }
+};
